@@ -1,0 +1,4 @@
+<plugin>
+  <name>emit-used-symbols</name>
+  <classname>io.fsq.buildgen.plugin.used.EmitUsedSymbolsPlugin</classname>
+</plugin>

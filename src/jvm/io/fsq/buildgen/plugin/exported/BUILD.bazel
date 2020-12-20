@@ -1,0 +1,14 @@
+load("@io_bazel_rules_scala//scala:scala.bzl", "scala_binary", "scala_library", "scala_test")
+
+scala_binary(
+    name = "emit-exported-symbols",
+    srcs = ["EmitExportedSymbolsPlugin.scala"],
+    main_class = "io.fsq.buildgen.plugin.exported.EmitExportedSymbolsPlugin",
+    resources = ["scalac-plugin.xml"],
+    resource_strip_prefix = "src/jvm/io/fsq/buildgen/plugin/exported",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@io_bazel_rules_scala_scala_compiler",
+        "@io_bazel_rules_scala_scala_reflect",
+    ],
+)

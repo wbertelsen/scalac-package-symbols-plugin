@@ -1,9 +1,10 @@
 // Copyright 2014 Foursquare Labs Inc. All Rights Reserved.
+// changes from upstream: removed BSON dep
 
 package io.fsq.common.scala
 
 import java.net.{MalformedURLException, URI, URISyntaxException, URL}
-import org.bson.types.ObjectId
+
 
 object TryO {
 
@@ -24,8 +25,7 @@ object TryO {
   def toBoolean(str: String): Option[Boolean] = apply(classOf[IllegalArgumentException])(str.toBoolean)
   def toUrl(str: String): Option[URL] = apply(classOf[MalformedURLException])(new URL(str))
   def toUri(str: String): Option[URI] = apply(classOf[URISyntaxException])(new URI(str))
-  def toObjectId(str: String): Option[ObjectId] = if (ObjectId.isValid(str)) Some(new ObjectId(str)) else None
-
+ 
   object AsInt { def unapply(str: String): Option[Int] = toInt(str) }
   object AsLong { def unapply(str: String): Option[Long] = toLong(str) }
   object AsShort { def unapply(str: String): Option[Short] = toShort(str) }
@@ -33,5 +33,4 @@ object TryO {
   object AsBoolean { def unapply(str: String): Option[Boolean] = toBoolean(str) }
   object AsUrl { def unapply(str: String): Option[URL] = toUrl(str) }
   object AsUri { def unapply(str: String): Option[URI] = toUri(str) }
-  object AsObjectId { def unapply(str: String): Option[ObjectId] = toObjectId(str) }
 }
