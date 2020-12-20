@@ -2,7 +2,11 @@
 
 package io.fsq.buildgen.plugin.used.test
 
-import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, PropertyNamingStrategy}
+import com.fasterxml.jackson.databind.{
+  DeserializationFeature,
+  ObjectMapper,
+  PropertyNamingStrategy
+}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import io.fsq.buildgen.plugin.used.EmitUsedSymbolsPlugin
@@ -17,9 +21,9 @@ import scala.tools.nsc.{Global, Settings}
 import scala.tools.nsc.reporters.ConsoleReporter
 
 case class EmitUsedSymbolsPluginOutput(
-  source: String,
-  imports: Seq[String],
-  fullyQualifiedNames: Seq[String]
+    source: String,
+    imports: Seq[String],
+    fullyQualifiedNames: Seq[String]
 )
 
 class EmitUsedSymbolsPluginTest {
@@ -27,25 +31,35 @@ class EmitUsedSymbolsPluginTest {
   val json = new ObjectMapper with ScalaObjectMapper
   json.registerModule(new DefaultScalaModule)
   json.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true)
-  json.setPropertyNamingStrategy(new PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy)
+  json.setPropertyNamingStrategy(
+    new PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy
+  )
 
   @Test
   def testSymbolTraversal(): Unit = {
-    val whitelist = Set(
+    val allowlist = Set(
       "io.fsq.common.scala.Identity",
       "io.fsq.common.scala.LazyLocal"
     )
-    val whitelistFile = Files.createTempFile("EmitUsedSymbolsPluginTest_whitelist", ".tmp").toFile
-    val whitelistWriter = new FileWriter(whitelistFile)
-    whitelist.foreach(symbol => {
-      whitelistWriter.write(symbol)
-      whitelistWriter.write('\n')
+    val allowlistFile =
+      Files.createTempFile("EmitUsedSymbolsPluginTest_allowlist", ".tmp").toFile
+    val allowlistWriter = new FileWriter(allowlistFile)
+    allowlist.foreach(symbol => {
+      allowlistWriter.write(symbol)
+      allowlistWriter.write('\n')
     })
-    whitelistWriter.close()
-    System.setProperty("io.fsq.buildgen.plugin.used.whitelist", whitelistFile.getAbsolutePath)
+    allowlistWriter.close()
+    System.setProperty(
+      "io.fsq.buildgen.plugin.used.allowlist",
+      allowlistFile.getAbsolutePath
+    )
 
-    val outputDir = Files.createTempDirectory("EmitUsedSymbolsPluginTest_outputDir").toFile
-    System.setProperty("io.fsq.buildgen.plugin.used.outputDir", outputDir.getAbsolutePath)
+    val outputDir =
+      Files.createTempDirectory("EmitUsedSymbolsPluginTest_outputDir").toFile
+    System.setProperty(
+      "io.fsq.buildgen.plugin.used.outputDir",
+      outputDir.getAbsolutePath
+    )
 
     val settings = new Settings
     settings.usejavacp.value = true
@@ -70,11 +84,22 @@ class EmitUsedSymbolsPluginTest {
       }
     }
 
-    val testSourceFile = new File("test/jvm/io/fsq/buildgen/plugin/used/test/SampleFileForPluginTests.scala")
-    val testSource = new BatchSourceFile(
-      testSourceFile.getName,
-      Source.fromFile(testSourceFile.getPath).toArray
+    val testSourceFile = new File(
+      "test/jvm/io/fsq/buildgen/plugin/used/test/SampleFileForPluginTests.scala"
     )
+    val testSource = {
+      val content = {
+        val source = Source.fromFile(testSourceFile.getPath)
+        val arr = source.toArray
+        source.close()
+        arr
+      }
+      new BatchSourceFile(
+        testSourceFile.getName,
+        content
+      )
+    }
+
     val runner = new global.Run()
     runner.compileSources(List(testSource))
 

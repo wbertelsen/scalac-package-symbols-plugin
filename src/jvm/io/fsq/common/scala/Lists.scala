@@ -12,7 +12,14 @@ import scala.collection.generic.{
   MapFactory
 }
 import scala.collection.immutable.{Map, VectorBuilder}
-import scala.collection.mutable.{ArrayBuffer, ArraySeq, Builder, HashMap, Map => MutableMap, PriorityQueue}
+import scala.collection.mutable.{
+  ArrayBuffer,
+  ArraySeq,
+  Builder,
+  HashMap,
+  Map => MutableMap,
+  PriorityQueue
+}
 import scala.reflect.ClassTag
 import scala.util.Random
 
@@ -27,15 +34,17 @@ object Arrays {
 
   case class PartitionResult(leftLength: Int, rightLength: Int)
 
-  def partitionInPlace[T](arr: ArraySeq[T], pivot: T)(implicit ord: Ordering[T]): PartitionResult =
+  def partitionInPlace[T](arr: ArraySeq[T], pivot: T)(implicit
+      ord: Ordering[T]
+  ): PartitionResult =
     partitionInPlace(arr, pivot, 0, arr.size)
   def partitionInPlace[T](
-    arr: ArraySeq[T],
-    pivot: T,
-    beginIndex: Int,
-    endIndex: Int
-  )(
-    implicit ord: Ordering[T]
+      arr: ArraySeq[T],
+      pivot: T,
+      beginIndex: Int,
+      endIndex: Int
+  )(implicit
+      ord: Ordering[T]
   ): PartitionResult = {
     val headIndex = beginIndex
     val tailIndex = endIndex - 1
@@ -60,7 +69,10 @@ object Lists {
   /**
     * Remove all elements from left that are in right
     */
-  def removeAll[T, Repr, R <: Traversable[T]](left: TraversableLike[T, Repr], right: R): Repr = {
+  def removeAll[T, Repr, R <: Traversable[T]](
+      left: TraversableLike[T, Repr],
+      right: R
+  ): Repr = {
     //this is tricky, but doing toSet in the closure will cause to be re-evaluated on every iteration
     val rightSet = right.toSet
     left.filterNot(rightSet.contains _)
@@ -70,7 +82,10 @@ object Lists {
     * Like removeAll, but uses a key function to determine equality. Useful for using IDs to determine
     * equality
     */
-  def removeAllBy[T, K, Repr, R <: Traversable[T]](left: TraversableLike[T, Repr], right: R)(f: T => K) = {
+  def removeAllBy[T, K, Repr, R <: Traversable[T]](
+      left: TraversableLike[T, Repr],
+      right: R
+  )(f: T => K) = {
     val rightSet = right.map(f).toSet
     left.filterNot(l => rightSet.contains(f(l)))
   }
@@ -78,7 +93,9 @@ object Lists {
   /**
     * Build a map with a custom function for aggregating collisions
     */
-  def aggregate[T, K, A](list: Iterable[T])(getKey: T => K)(agg: (Option[A], T) => A): Map[K, A] = {
+  def aggregate[T, K, A](
+      list: Iterable[T]
+  )(getKey: T => K)(agg: (Option[A], T) => A): Map[K, A] = {
     val m = scala.collection.mutable.Map[K, A]()
     list.foreach(x => {
       val key = getKey(x)
@@ -95,14 +112,15 @@ object Lists {
     *                                   List(1,4),
     *                                   List(2,4)
     */
-  def product[T](lists: List[T]*): List[List[T]] = lists.toList match {
-    case Nil => List(Nil): List[List[T]]
-    case h +: t =>
-      for {
-        p <- product(t: _*)
-        i <- h
-      } yield i +: p
-  }
+  def product[T](lists: List[T]*): List[List[T]] =
+    lists.toList match {
+      case Nil => List(Nil): List[List[T]]
+      case h +: t =>
+        for {
+          p <- product(t: _*)
+          i <- h
+        } yield i +: p
+    }
 
   /**
     * Cartesian product of an arbitrary number of lists
@@ -112,29 +130,31 @@ object Lists {
     *                                   List(2,3),
     *                                   List(2,4)
     */
-  def productReverse[T](lists: List[T]*): List[List[T]] = lists.toList match {
-    case Nil => List(Nil): List[List[T]]
-    case h +: t => {
-      val p = productReverse(t: _*)
-      for {
-        i <- h
-        r <- p
-      } yield i +: r
+  def productReverse[T](lists: List[T]*): List[List[T]] =
+    lists.toList match {
+      case Nil => List(Nil): List[List[T]]
+      case h +: t => {
+        val p = productReverse(t: _*)
+        for {
+          i <- h
+          r <- p
+        } yield i +: r
+      }
     }
-  }
 
   /**
     * Returns the powerset of a List
     *
     * If you don't care about ordering use Set(1,2,3).subsets.
     */
-  def powerset[T](xs: List[T]): List[List[T]] = xs match {
-    case y +: ys => {
-      val ps = powerset(ys)
-      ps.map(y +: _) ++ ps
+  def powerset[T](xs: List[T]): List[List[T]] =
+    xs match {
+      case y +: ys => {
+        val ps = powerset(ys)
+        ps.map(y +: _) ++ ps
+      }
+      case Nil => List(Nil)
     }
-    case Nil => List(Nil)
-  }
 
   /**
     * Zips with a binary operation
@@ -150,12 +170,12 @@ object Lists {
   def nth[T](seq: Seq[T], target: Int)(implicit ord: Ordering[T]): Option[T] = {
     @tailrec
     def nthHelper(
-      beginIndex: Int,
-      endIndex: Int,
-      target: Int,
-      arr: ArraySeq[T]
-    )(
-      implicit ord: Ordering[T]
+        beginIndex: Int,
+        endIndex: Int,
+        target: Int,
+        arr: ArraySeq[T]
+    )(implicit
+        ord: Ordering[T]
     ): Option[T] = {
       if (beginIndex == endIndex) {
         None
@@ -165,15 +185,22 @@ object Lists {
         Arrays.swap(arr, beginIndex, pivotIndex)
         val headIndex = beginIndex + 1
 
-        val partitionResult = Arrays.partitionInPlace(arr, pivot, headIndex, endIndex)
-        val (leftLength, rightLength) = (partitionResult.leftLength, partitionResult.rightLength)
+        val partitionResult =
+          Arrays.partitionInPlace(arr, pivot, headIndex, endIndex)
+        val (leftLength, rightLength) =
+          (partitionResult.leftLength, partitionResult.rightLength)
 
         if (target < leftLength) {
           nthHelper(headIndex, endIndex - rightLength, target, arr)
         } else if (target == leftLength) {
           Some(pivot)
         } else {
-          nthHelper(endIndex - rightLength, endIndex, target - leftLength - 1, arr)
+          nthHelper(
+            endIndex - rightLength,
+            endIndex,
+            target - leftLength - 1,
+            arr
+          )
         }
       }
     }
@@ -184,9 +211,12 @@ object Lists {
   /**
     * Functions so simple their type signature determines their implementation
     */
-  def sequence1[A, B](t: (Option[A], B)): Option[(A, B)] = t._1.map(a => (a, t._2))
-  def sequence2[A, B](t: (A, Option[B])): Option[(A, B)] = t._2.map(b => (t._1, b))
-  def map12[A, B, C, D](t: (A, B))(f1: A => C, f2: B => D): (C, D) = (f1(t._1), f2(t._2))
+  def sequence1[A, B](t: (Option[A], B)): Option[(A, B)] =
+    t._1.map(a => (a, t._2))
+  def sequence2[A, B](t: (A, Option[B])): Option[(A, B)] =
+    t._2.map(b => (t._1, b))
+  def map12[A, B, C, D](t: (A, B))(f1: A => C, f2: B => D): (C, D) =
+    (f1(t._1), f2(t._2))
   def map1[A, B, C](t: (A, B))(f: A => C): (C, B) = map12(t)(f, identity[B])
   def map2[A, B, C](t: (A, B))(f: B => C): (A, C) = map12(t)(identity[A], f)
 
@@ -266,7 +296,8 @@ object Lists {
   object Implicits extends Implicits
 }
 
-class FSCompanion[CC[X] <: Traversable[X]](val companion: GenericCompanion[CC]) extends AnyVal {
+class FSCompanion[CC[X] <: Traversable[X]](val companion: GenericCompanion[CC])
+    extends AnyVal {
 
   /**
     * Unfolds an item into a CC
@@ -283,9 +314,13 @@ class FSCompanion[CC[X] <: Traversable[X]](val companion: GenericCompanion[CC]) 
   }
 }
 
-class FSTraversableOnce[T, CC[X] <: TraversableOnce[X]](val xs: CC[T]) extends AnyVal {
-  def shuffled(implicit bf: CanBuildFrom[CC[T], T, CC[T]]): CC[T] = Random.shuffle(xs)
-  def shuffledDeterministically(seed: Long)(implicit bf: CanBuildFrom[CC[T], T, CC[T]]): CC[T] =
+class FSTraversableOnce[T, CC[X] <: TraversableOnce[X]](val xs: CC[T])
+    extends AnyVal {
+  def shuffled(implicit bf: CanBuildFrom[CC[T], T, CC[T]]): CC[T] =
+    Random.shuffle(xs)
+  def shuffledDeterministically(
+      seed: Long
+  )(implicit bf: CanBuildFrom[CC[T], T, CC[T]]): CC[T] =
     (new Random(seed)).shuffle(xs)
 
   /**
@@ -497,8 +532,12 @@ class FSTraversableOnce[T, CC[X] <: TraversableOnce[X]](val xs: CC[T]) extends A
   }
 }
 
-class FSTraversable[CC[X] <: Traversable[X], T, Repr <: TraversableLike[T, Repr]](
-  val xs: TraversableLike[T, Repr] with GenericTraversableTemplate[T, CC]
+class FSTraversable[
+    CC[X] <: Traversable[X],
+    T,
+    Repr <: TraversableLike[T, Repr]
+](
+    val xs: TraversableLike[T, Repr] with GenericTraversableTemplate[T, CC]
 ) extends AnyVal {
   def newBuilder[A] = xs.companion.newBuilder[A]
 
@@ -516,19 +555,20 @@ class FSTraversable[CC[X] <: Traversable[X], T, Repr <: TraversableLike[T, Repr]
     builder.result()
   }
 
-  def has(e: T): Boolean = xs match {
-    case xSet: Set[_] => xSet.asInstanceOf[Set[T]].contains(e)
-    case xMap: Map[_, _] => {
-      val p = e.asInstanceOf[(Any, Any)]
-      xMap.asInstanceOf[Map[Any, Any]].get(p._1) == Some(p._2)
+  def has(e: T): Boolean =
+    xs match {
+      case xSet: Set[_] => xSet.asInstanceOf[Set[T]].contains(e)
+      case xMap: Map[_, _] => {
+        val p = e.asInstanceOf[(Any, Any)]
+        xMap.asInstanceOf[Map[Any, Any]].get(p._1) == Some(p._2)
+      }
+      case _ => xs.exists(_ == e)
     }
-    case _ => xs.exists(_ == e)
-  }
 
   def flatGroupBy[S](f: T => Option[S]): Map[S, Repr] = {
     xs.groupBy(f).flatMap {
       case (Some(s), ts) => Some((s, ts))
-      case _ => None
+      case _             => None
     }
   }
 
@@ -544,7 +584,9 @@ class FSTraversable[CC[X] <: Traversable[X], T, Repr <: TraversableLike[T, Repr]
     (accum, builder.result())
   }
 
-  def flatMapAccum[A, B](a: A)(f: (A, T) => (A, TraversableOnce[B])): (A, CC[B]) = {
+  def flatMapAccum[A, B](
+      a: A
+  )(f: (A, T) => (A, TraversableOnce[B])): (A, CC[B]) = {
     val builder = newBuilder[B]
     val accum = xs.foldLeft(a) {
       case (accum, x) =>
@@ -608,7 +650,7 @@ class FSTraversable[CC[X] <: Traversable[X], T, Repr <: TraversableLike[T, Repr]
 
     for (x <- xs) {
       m.get(x) match {
-        case None => m(x) = 1
+        case None    => m(x) = 1
         case Some(i) => m(x) = i + 1
       }
     }
@@ -643,7 +685,8 @@ class FSTraversable[CC[X] <: Traversable[X], T, Repr <: TraversableLike[T, Repr]
 
   def minOption(implicit ord: Ordering[T]): Option[T] = minByOption(identity[T])
   def maxOption(implicit ord: Ordering[T]): Option[T] = maxByOption(identity[T])
-  def maxByOption[U](f: T => U)(implicit ord: Ordering[U]): Option[T] = minByOption(f)(ord.reverse)
+  def maxByOption[U](f: T => U)(implicit ord: Ordering[U]): Option[T] =
+    minByOption(f)(ord.reverse)
 
   def collectFirstOpt[U](f: T => Option[U]): Option[U] = {
     for (x <- xs) {
@@ -734,14 +777,18 @@ class FSTraversable[CC[X] <: Traversable[X], T, Repr <: TraversableLike[T, Repr]
     */
   def partitionN(fs: (T => Boolean)*): Seq[Seq[T]] = {
     // Want 1 more than the size of the function list, since we need space for the remainder list.
-    val builders = new Array[scala.collection.mutable.Builder[T, Vector[T]]](fs.size + 1)
+    val builders =
+      new Array[scala.collection.mutable.Builder[T, Vector[T]]](fs.size + 1)
     (0 to fs.size).foreach(i => {
       builders(i) = Vector.newBuilder[T]
     })
     val fsWithIndex = fs.zipWithIndex
     val sizeOfFunctionList = fs.size
     xs.foreach(x => {
-      val index = fsWithIndex.find({ case (f, i) => f(x) }).map(_._2).getOrElse(sizeOfFunctionList)
+      val index = fsWithIndex
+        .find({ case (f, i) => f(x) })
+        .map(_._2)
+        .getOrElse(sizeOfFunctionList)
       builders(index) += x
     })
     builders.toVector.map(_.result())
@@ -749,19 +796,25 @@ class FSTraversable[CC[X] <: Traversable[X], T, Repr <: TraversableLike[T, Repr]
 }
 
 class FSSet[
-  CC[X] <: scala.collection.Set[X],
-  T,
-  Repr <: SetLike[T, Repr] with scala.collection.Set[T] with GenericSetTemplate[T, CC]
+    CC[X] <: scala.collection.Set[X],
+    T,
+    Repr <: SetLike[T, Repr] with scala.collection.Set[
+      T
+    ] with GenericSetTemplate[T, CC]
 ](
-  val xs: SetLike[T, Repr] with GenericSetTemplate[T, CC]
+    val xs: SetLike[T, Repr] with GenericSetTemplate[T, CC]
 ) extends AnyVal {
   def newBuilder = xs.companion.newBuilder[T]
 
   def has(e: T): Boolean = xs.contains(e)
 }
 
-class FSIterable[CC[X] <: Iterable[X], T, Repr <: IterableLike[T, Repr] with GenericTraversableTemplate[T, CC]](
-  val xs: IterableLike[T, Repr] with GenericTraversableTemplate[T, CC]
+class FSIterable[
+    CC[X] <: Iterable[X],
+    T,
+    Repr <: IterableLike[T, Repr] with GenericTraversableTemplate[T, CC]
+](
+    val xs: IterableLike[T, Repr] with GenericTraversableTemplate[T, CC]
 ) extends AnyVal {
   def newBuilder[A] = xs.companion.newBuilder[A]
 
@@ -789,7 +842,9 @@ class FSIterable[CC[X] <: Iterable[X], T, Repr <: IterableLike[T, Repr] with Gen
     val builder = newBuilder[(T, Option[T])]
 
     @tailrec
-    def slidingOptPairsRec(arr: IterableLike[T, Repr] with GenericTraversableTemplate[T, CC]): Unit = {
+    def slidingOptPairsRec(
+        arr: IterableLike[T, Repr] with GenericTraversableTemplate[T, CC]
+    ): Unit = {
       val rest = arr.drop(1)
       (arr.headOption, rest.headOption) match {
         case (None, _) =>
@@ -1003,8 +1058,12 @@ class FSIterable[CC[X] <: Iterable[X], T, Repr <: IterableLike[T, Repr] with Gen
   }
 }
 
-class FSSeq[CC[X] <: Seq[X], T, Repr <: SeqLike[T, Repr] with GenericTraversableTemplate[T, CC]](
-  val xs: SeqLike[T, Repr] with GenericTraversableTemplate[T, CC]
+class FSSeq[
+    CC[X] <: Seq[X],
+    T,
+    Repr <: SeqLike[T, Repr] with GenericTraversableTemplate[T, CC]
+](
+    val xs: SeqLike[T, Repr] with GenericTraversableTemplate[T, CC]
 ) extends AnyVal {
   def newBuilder[A] = xs.companion.newBuilder[A]
 
@@ -1027,7 +1086,7 @@ class FSSeq[CC[X] <: Seq[X], T, Repr <: SeqLike[T, Repr] with GenericTraversable
   def indexWhereOption(pred: T => Boolean): Option[Int] = {
     xs.indexWhere(pred) match {
       case -1 => None
-      case i => Some(i)
+      case i  => Some(i)
     }
   }
 
@@ -1037,7 +1096,7 @@ class FSSeq[CC[X] <: Seq[X], T, Repr <: SeqLike[T, Repr] with GenericTraversable
   def indexOfOption(target: T): Option[Int] = {
     xs.indexOf(target) match {
       case -1 => None
-      case i => Some(i)
+      case i  => Some(i)
     }
   }
 
@@ -1067,12 +1126,15 @@ class FSSeq[CC[X] <: Seq[X], T, Repr <: SeqLike[T, Repr] with GenericTraversable
     * Finds the nth smallest value in an unsorted list in O(n) time and O(1) space
     * ie List(3,2,4,1).nth(0) => 1 and List(3,2,4,1).nth(2) => 3
    **/
-  final def nth(target: Int)(implicit ord: Ordering[T]): Option[T] = Lists.nth(xs.toVector, target)
+  final def nth(target: Int)(implicit ord: Ordering[T]): Option[T] =
+    Lists.nth(xs.toVector, target)
 
   /**
     * Finds the item at the target cumulative weight in an unsorted weighted list in O(n) time.
     */
-  final def pth[S](target: Double)(implicit ev: T => (S, Double), ord: Ordering[S]): Option[S] =
+  final def pth[S](
+      target: Double
+  )(implicit ev: T => (S, Double), ord: Ordering[S]): Option[S] =
     if (xs.isEmpty) {
       None
     } else {
@@ -1090,9 +1152,11 @@ class FSSeq[CC[X] <: Seq[X], T, Repr <: SeqLike[T, Repr] with GenericTraversable
       }
     }
 
-  def sortByDesc[B](f: T => B)(implicit ord: Ordering[B]): Repr = xs.sortBy[B](f)(ord.reverse)
+  def sortByDesc[B](f: T => B)(implicit ord: Ordering[B]): Repr =
+    xs.sortBy[B](f)(ord.reverse)
 
-  def sortedDesc[B >: T](implicit ord: Ordering[B]): Repr = xs.sorted[B](ord.reverse)
+  def sortedDesc[B >: T](implicit ord: Ordering[B]): Repr =
+    xs.sorted[B](ord.reverse)
 
   /** Inserts a new element into the sequence after the first element which matches the predicate.
     * If the predicate isn't matched then the newElement will not be inserted.
@@ -1118,22 +1182,30 @@ class FSSeq[CC[X] <: Seq[X], T, Repr <: SeqLike[T, Repr] with GenericTraversable
 }
 
 class FSMap[
-  A,
-  B,
-  This <: scala.collection.Map[A, B] with scala.collection.MapLike[A, B, This],
-  CC[X, Y] <: scala.collection.Map[X, Y] with scala.collection.MapLike[X, Y, CC[X, Y]]
+    A,
+    B,
+    This <: scala.collection.Map[A, B] with scala.collection.MapLike[
+      A,
+      B,
+      This
+    ],
+    CC[X, Y] <: scala.collection.Map[X, Y] with scala.collection.MapLike[
+      X,
+      Y,
+      CC[X, Y]
+    ]
 ](
-  m: This,
-  factory: MapFactory[CC]
-)(
-  implicit ev1: CC[A, B] =:= This,
-  ev2: This =:= CC[A, B]
+    m: This,
+    factory: MapFactory[CC]
+)(implicit
+    ev1: CC[A, B] =:= This,
+    ev2: This =:= CC[A, B]
 ) {
   def hasKey(x: A): Boolean = m.contains(x)
 
-  def invert[DD[X] <: Traversable[X], B1](
-    implicit traversable: B => DD[B1],
-    cbf: CanBuildFrom[DD[B1], A, DD[A]]
+  def invert[DD[X] <: Traversable[X], B1](implicit
+      traversable: B => DD[B1],
+      cbf: CanBuildFrom[DD[B1], A, DD[A]]
   ): CC[B1, DD[A]] = {
     val intermediate = scala.collection.mutable.Map.empty[B1, Builder[A, DD[A]]]
     for {
@@ -1183,23 +1255,28 @@ class FSOption[T](val opt: Option[T]) extends AnyVal {
 
   def isEmptyOr(pred: T => Boolean): Boolean = opt.forall(pred)
 
-  def unzipped[T1, T2](implicit asPair: (T) => (T1, T2)): (Option[T1], Option[T2]) = opt match {
-    case Some(x) => {
-      val pair = asPair(x)
-      (Some(pair._1), Some(pair._2))
+  def unzipped[T1, T2](implicit
+      asPair: (T) => (T1, T2)
+  ): (Option[T1], Option[T2]) =
+    opt match {
+      case Some(x) => {
+        val pair = asPair(x)
+        (Some(pair._1), Some(pair._2))
+      }
+      case None => (None, None)
     }
-    case None => (None, None)
-  }
 
-  def toMapBy[K, V](f: T => (K, V)): Map[K, V] = opt match {
-    case Some(x) => Map(f(x))
-    case None => Map.empty
-  }
+  def toMapBy[K, V](f: T => (K, V)): Map[K, V] =
+    opt match {
+      case Some(x) => Map(f(x))
+      case None    => Map.empty
+    }
 
-  def flatToMapBy[K, V](f: T => Option[(K, V)]): Map[K, V] = opt.flatMap(f) match {
-    case Some((k, v)) => Map(k -> v)
-    case _ => Map.empty
-  }
+  def flatToMapBy[K, V](f: T => Option[(K, V)]): Map[K, V] =
+    opt.flatMap(f) match {
+      case Some((k, v)) => Map(k -> v)
+      case _            => Map.empty
+    }
 
   def toMapByKey[K](f: T => K): Map[K, T] = {
     toMapBy(elem => (f(elem), elem))
@@ -1216,7 +1293,7 @@ class FSOption[T](val opt: Option[T]) extends AnyVal {
   def toVectorBy[U](f: T => U): Vector[U] = {
     opt match {
       case Some(x) => Vector(f(x))
-      case None => Vector.empty
+      case None    => Vector.empty
     }
   }
 
