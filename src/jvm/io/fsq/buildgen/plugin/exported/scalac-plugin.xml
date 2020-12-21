@@ -1,4 +1,0 @@
-<plugin>
-  <name>emit-exported-symbols</name>
-  <classname>io.fsq.buildgen.plugin.exported.EmitExportedSymbolsPlugin</classname>
-</plugin>

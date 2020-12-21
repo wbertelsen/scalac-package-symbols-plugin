@@ -1,19 +1,17 @@
 // Copyright 2019 Foursquare Labs Inc. All Rights Reserved.
 
-package io.fsq.buildgen.plugin.used.test
+package com.wbertelsen.packagesymbols.scalac.plugin.used.test
 
-import com.fasterxml.jackson.databind.{
-  DeserializationFeature,
-  ObjectMapper,
-  PropertyNamingStrategy
-}
+import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper, PropertyNamingStrategy}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
-import io.fsq.buildgen.plugin.used.EmitUsedSymbolsPlugin
 import java.io.{File, FileWriter}
 import java.nio.file.Files
+
+import com.wbertelsen.packagesymbols.scalac.plugin.used.EmitUsedSymbolsPlugin
 import org.junit.{Assert, Test}
 import org.reflections.util.ClasspathHelper
+
 import scala.collection.JavaConverters._
 import scala.io.Source
 import scala.reflect.internal.util.BatchSourceFile
@@ -50,14 +48,14 @@ class EmitUsedSymbolsPluginTest {
     })
     allowlistWriter.close()
     System.setProperty(
-      "io.fsq.buildgen.plugin.used.allowlist",
+      "com.wbertelsen.packagesymbols.scalac.plugin.used.allowlist",
       allowlistFile.getAbsolutePath
     )
 
     val outputDir =
       Files.createTempDirectory("EmitUsedSymbolsPluginTest_outputDir").toFile
     System.setProperty(
-      "io.fsq.buildgen.plugin.used.outputDir",
+      "com.wbertelsen.packagesymbols.scalac.plugin.used.outputDir",
       outputDir.getAbsolutePath
     )
 
@@ -85,7 +83,7 @@ class EmitUsedSymbolsPluginTest {
     }
 
     val testSourceFile = new File(
-      "test/jvm/io/fsq/buildgen/plugin/used/test/SampleFileForPluginTests.scala"
+      "test/jvm/com/wbertelsen/packagesymbols/scalac/plugin/used/test/SampleFileForPluginTests.scala"
     )
     val testSource = {
       val content = {

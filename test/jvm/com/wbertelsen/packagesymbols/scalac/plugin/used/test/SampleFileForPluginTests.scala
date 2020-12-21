@@ -1,6 +1,6 @@
 // Copyright 2019 Foursquare Labs Inc. All Rights Reserved.
 
-package io.fsq.buildgen.plugin.used.test
+package com.wbertelsen.packagesymbols.scalac.plugin.used.test
 
 import io.fsq.common.scala.Lists.Implicits._
 import io.fsq.common.scala.TryO

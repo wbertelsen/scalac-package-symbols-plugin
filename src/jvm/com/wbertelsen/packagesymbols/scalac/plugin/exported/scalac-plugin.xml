@@ -1,0 +1,4 @@
+<plugin>
+  <name>emit-exported-symbols</name>
+  <classname>com.wbertelsen.packagesymbols.scalac.plugin.exported.EmitExportedSymbolsPlugin</classname>
+</plugin>

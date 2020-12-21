@@ -1,0 +1,4 @@
+<plugin>
+  <name>emit-used-symbols</name>
+  <classname>com.wbertelsen.packagesymbols.scalac.plugin.used.EmitUsedSymbolsPlugin</classname>
+</plugin>

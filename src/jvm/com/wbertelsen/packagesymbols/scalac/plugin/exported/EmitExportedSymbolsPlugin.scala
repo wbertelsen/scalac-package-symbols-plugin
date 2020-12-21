@@ -1,7 +1,9 @@
 // Copyright 2011 Foursquare Labs Inc. All Rights Reserved.
+// Forked from https://github.com/foursquare/fsqio/blob/395c947/src/jvm/io/fsq/buildgen/plugin/exported/EmitExportedSymbolsPlugin.scala
+// Under the Apache 2.0 license
 // Modified from upstream to take -P options and to work more like the used symbol plugin
 
-package io.fsq.buildgen.plugin.exported
+package com.wbertelsen.packagesymbols.scalac.plugin.exported
 
 import java.io.{FileWriter, PrintWriter, Writer}
 
@@ -34,7 +36,7 @@ class EmitExportedSymbolsPlugin(val global: Global) extends Plugin {
 
   override val optionsHelp: Option[String] = Some(
     s"  -P:$name:outputDir:dir\tset output directory to dir" + "\n" +
-      s"  -P:$name:debug\tprint debug output"
+    s"  -P:$name:debug\tprint debug output"
   )
 
   private object EmitExportedSymbolsPluginComponent extends PluginComponent {

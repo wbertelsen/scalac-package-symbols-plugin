@@ -3,12 +3,12 @@ load("@io_bazel_rules_scala//scala:scala.bzl", "scala_junit_test")
 scala_junit_test(
     name = "test",
     srcs = ["EmitUsedSymbolsPluginTest.scala"],
-    data = ["//test/jvm/io/fsq/buildgen/plugin/used/test:test-files"],
+    data = ["//test/jvm/com/wbertelsen/packagesymbols/scalac/plugin/used/test:test-files"],
     suffixes = [
         "Test",
     ],
     deps = [
-        "//src/jvm/io/fsq/buildgen/plugin/used:emit-used-symbols",
+        "//src/jvm/com/wbertelsen/packagesymbols/scalac/plugin/used:emit-used-symbols",
         "//src/jvm/io/fsq/common/scala",
         "@io_bazel_rules_scala_scala_compiler",
         "@io_bazel_rules_scala_scala_reflect",

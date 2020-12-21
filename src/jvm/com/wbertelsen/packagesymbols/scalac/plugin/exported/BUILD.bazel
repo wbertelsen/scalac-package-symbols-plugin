@@ -1,0 +1,37 @@
+load("@io_bazel_rules_scala//scala:scala.bzl", "scala_binary", "scala_library", "scala_test")
+
+scala_binary(
+    name = "emit-exported-symbols",
+    srcs = ["EmitExportedSymbolsPlugin.scala"],
+    main_class = "com.wbertelsen.packagesymbols.scalac.plugin.exported.EmitExportedSymbolsPlugin",
+    resources = ["scalac-plugin.xml"],
+    resource_strip_prefix = "src/jvm/com/wbertelsen/packagesymbols/scalac/plugin/exported",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@io_bazel_rules_scala_scala_compiler",
+        "@io_bazel_rules_scala_scala_reflect",
+    ],
+   tags = ["maven_coordinates=com.wbertelsen:scalac-emit-exported-symbols_2.12:{pom_version}"],
+)
+
+load("@graknlabs_bazel_distribution//maven:rules.bzl", "deploy_maven", "assemble_maven")
+assemble_maven(
+    name = "assemble-maven",
+    target = ":emit-exported-symbols",
+    package = "{maven_packages}",
+    project_name = "scalac-emit-used-symbols-plugin",
+    project_description = "scalac plugin for emitting exported symbols of scala packages",
+    project_url = "https://github.com/wbertelsen/scalac-package-symbols-plugin",
+    scm_url = "https://github.com/wbertelsen/scalac-package-symbols-plugin.git",
+    version_file = "//publish:VERSION",
+    developers = {"1": ["name=Will Bertelsen", "email=wsbertelsen@gmail.com"]},
+    license = "apache"
+)
+
+deploy_maven(
+    name = "deploy-maven",
+    target = ":assemble-maven",
+    release = "https://api.bintray.com/content/wbertelsen/maven-oss/",
+    snapshot = "",
+    bintray_package_version = "scalac-package-symbols-plugin/0.0.0",
+)

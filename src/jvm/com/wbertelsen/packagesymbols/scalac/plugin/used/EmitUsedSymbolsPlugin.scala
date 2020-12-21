@@ -1,7 +1,9 @@
 // Copyright 2011 Foursquare Labs Inc. All Rights Reserved.
+// https://github.com/foursquare/fsqio/blob/395c947340ce345a2f066fe89e8b19d09b66a202/src/jvm/io/fsq/buildgen/plugin/used/EmitUsedSymbolsPlugin.scala
+// Under the Apache 2.0 license
 // Modified from upstream to take -P options and remove non inclusive language
 
-package io.fsq.buildgen.plugin.used
+package com.wbertelsen.packagesymbols.scalac.plugin.used
 
 import java.io.{FileWriter, PrintWriter, Writer}
 import scala.io.Source
@@ -27,11 +29,11 @@ class EmitUsedSymbolsPlugin(override val global: Global) extends Plugin {
 
   // Default to props so tests still work
   val allowListProp = Option(
-    System.getProperty("io.fsq.buildgen.plugin.used.allowlist")
+    System.getProperty("com.wbertelsen.packagesymbols.scalac.plugin.used.allowlist")
   )
   allowListProp.foreach(p => allowlistFile = Option(p))
   val outputDirProp = Option(
-    System.getProperty("io.fsq.buildgen.plugin.used.outputDir")
+    System.getProperty("com.wbertelsen.packagesymbols.scalac.plugin.used.outputDir")
   )
   outputDirProp.foreach(p => outputDir = Option(p))
 
@@ -54,8 +56,8 @@ class EmitUsedSymbolsPlugin(override val global: Global) extends Plugin {
 
   override val optionsHelp: Option[String] = Some(
     s"  -P:$name:outputDir:dir\tset output directory to dir" + "\n" +
-      s"  -P:$name:debug\tprint debug output" + "\n" +
-      s"  -P:$name:allowlistFile:file\tset allowlist file file"
+    s"  -P:$name:debug\tprint debug output" + "\n" +
+    s"  -P:$name:allowlistFile:file\tset allowlist file file"
   )
 
   private object EmitUsedSymbolsPluginComponent extends PluginComponent {

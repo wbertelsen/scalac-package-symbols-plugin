@@ -64,3 +64,11 @@ maven_dependencies()
 load("//3rdparty:target_file.bzl", "build_external_workspace")
 
 build_external_workspace(name = "third_party")
+
+
+# publishing
+git_repository(
+    name = "graknlabs_bazel_distribution",
+    remote = "https://github.com/wbertelsen/bazel-distribution",
+    commit = "69c9f6f340dda9ff162f867f4a5543ba49b07ac8"
+)
