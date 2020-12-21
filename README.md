@@ -7,6 +7,7 @@ forked from https://github.com/foursquare/fsqio/tree/master/src/jvm/io/fsq/build
 ## What is this for?
 This is useful for generating BUILD files for build systems that require explicit source dependencies such as [bazel](https://bazel.build/) and [pants](https://v1.pantsbuild.org/index.html)
 
+This is experimental code, do not depend on it. 
 
 ### Building
 
